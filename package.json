@@ -1,10 +1,11 @@
 {
   "name": "ipl",
   "version": "1.0.0",
-  "description": "",
+  "description": "convert csv file data into json",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node ./src/server/index.js"
   },
   "author": "Dharmendra",
   "license": "ISC",
@@ -15,5 +16,9 @@
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-prettier": "^3.4.0",
     "prettier": "^2.3.2"
+  },
+  "dependencies": {
+    "csvtojson": "^2.0.10",
+    "path": "^0.12.7"
   }
 }
