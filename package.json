@@ -19,6 +19,7 @@
   },
   "dependencies": {
     "csvtojson": "^2.0.10",
+    "lodash": "^4.17.21",
     "path": "^0.12.7"
   }
 }
