@@ -2,11 +2,11 @@ const fs = require('fs');
 const csv = require('csvtojson');
 const path = require('path');
 
-const WonMatchAndToss = require('./ipl/teamWonMatchAndToss');
-const playerOfTheMatchEachSeason = require('./ipl/highestPlayerOfTheMatch.js');
-const strikeRateOfBatsmanEachSeason = require('./ipl/strikeRateOfBatsmanEachSeason');
-const highestDissmiss = require('./ipl/highestDissmissPlayerByOtherPlayer');
-const bestSuperOverEconomies = require('./ipl/superOverEconomie');
+const WonMatchAndToss = require('./lodash/teamWonMatchAndToss');
+const playerOfTheMatchEachSeason = require('./lodash/highestPlayerOfTheMatch');
+const strikeRateOfBatsmanEachSeason = require('./lodash/strikeRateOfBatsmanEachSeason');
+const highestDissmiss = require('./lodash/highestDissmissPlayerByOtherPlayer');
+const bestSuperOverEconomies = require('./lodash/superOverEconomie');
 
 const matchesFilePath = path.join(__dirname, '../data/matches.csv');
 const deliveriesFilePath = path.join(__dirname, '../data/deliveries.csv');
@@ -73,7 +73,7 @@ const convertIntoJson = (resultOfProblem, jsonFilePath) => {
   resultOfProblem.forEach((matchResult) => {
     let jsonDataOfMatch = JSON.stringify(matchResult);
 
-    fs.writeFile(jsonFilePath[index++], jsonDataOfMatch, (error, data) => {
+    fs.writeFile(jsonFilePath[index++], jsonDataOfMatch, (error) => {
       if (error) {
         console.error(error.message);
       }
