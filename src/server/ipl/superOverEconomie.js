@@ -1,60 +1,52 @@
-const bestSuperOverEconomies = (deliveries) => {
+const _ = require('lodash');
+
+const superOverEconomie = (deliveries) => {
   let bowlerBowl = {};
+  let bowlerTotalRun = _.chain(deliveries)
+    .reduce((runsOfObj, match) => {
+      if (_.toNumber(match.is_super_over) === 1) {
+        let bowler = match.bowler;
+        let totalRuns = _.toNumber(match.total_runs);
 
-  let bowlerTotalRuns = deliveries.reduce((objOfBowler, match) => {
-    if (Number(match.is_super_over) === 1) {
-      let bowler = match.bowler;
-      let totalRuns = Number(match.total_runs);
+        runsOfObj[bowler]
+          ? (runsOfObj[bowler] += totalRuns)
+          : (runsOfObj[bowler] = {}) && (runsOfObj[bowler] = totalRuns);
 
-      if (objOfBowler[bowler]) {
-        objOfBowler[bowler] += totalRuns;
-        bowlerBowl[bowler] += 1;
-      } else {
-        objOfBowler[bowler] = {};
-        objOfBowler[bowler] = totalRuns;
-        bowlerBowl[bowler] = 1;
-      }
-    }
-
-    return objOfBowler;
-  }, {});
-
-  let calculateEconomies = Object.keys(bowlerTotalRuns).reduce(
-    (objOfBowler, playerName) => {
-      if (bowlerBowl.hasOwnProperty(playerName)) {
-        let economieOfBowler = Number(
-          (bowlerTotalRuns[playerName] / (bowlerBowl[playerName] / 6)).toFixed(
-            2
-          )
-        );
-
-        if (!objOfBowler[playerName]) {
-          objOfBowler[playerName] = economieOfBowler;
-        }
+        bowlerBowl[bowler]
+          ? (bowlerBowl[bowler] += 1)
+          : (bowlerBowl[bowler] = {}) && (bowlerBowl[bowler] = 1);
       }
 
-      return objOfBowler;
-    },
-    {}
-  );
+      return runsOfObj;
+    }, {})
+    .value();
 
-  let sortedDataOfBestEconomies = Object.entries(calculateEconomies).sort(
-    (firstEntry, secondEntry) => {
-      if (firstEntry[1] > secondEntry[1]) {
-        return 1;
-      } else if (firstEntry[1] < secondEntry[1]) {
-        return -1;
-      } else {
-        return 0;
+  let calculateEconomies = _.chain(bowlerTotalRun)
+    .keys()
+    .reduce((obj, player) => {
+      if (bowlerBowl.hasOwnProperty(player)) {
+        let runs = bowlerTotalRun[player];
+        let bowl = bowlerBowl[player];
+
+        let economie = _.toNumber((runs / (bowl / 6)).toFixed(2));
+
+        obj[player] = economie;
       }
-    }
-  );
 
-  let bestEconomiesOfBowlerInSuperOver = Object.fromEntries(
-    sortedDataOfBestEconomies
-  );
+      return obj;
+    }, {})
+    .value();
 
-  return bestEconomiesOfBowlerInSuperOver;
+  let finalEconomies = _.chain(calculateEconomies)
+    .toPairs()
+    .sortBy((arr) => arr[1])
+    .reduce((obj, ar) => {
+      obj[ar[0]] = ar[1];
+      return obj;
+    }, {})
+    .value();
+
+  return finalEconomies;
 };
 
-module.exports = bestSuperOverEconomies;
+module.exports = superOverEconomie;

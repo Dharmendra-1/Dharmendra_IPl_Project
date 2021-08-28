@@ -1,55 +1,36 @@
-const highestPlayerOfTheMatchOfEachSeason = (matches) => {
-  const playerOfTheMatch = matches.reduce((objOfPlayerOfTheMatch, match) => {
-    let season = match.season;
-    let player = match.player_of_match;
+const _ = require('lodash');
 
-    if (objOfPlayerOfTheMatch[season]) {
-      if (objOfPlayerOfTheMatch[season][player]) {
-        objOfPlayerOfTheMatch[season][player] += 1;
-      } else {
-        objOfPlayerOfTheMatch[season][player] = 1;
-      }
-    } else {
-      objOfPlayerOfTheMatch[season] = {};
-    }
+const playerOfTheMatch = (matches) => {
+  let allPlayer = _.chain(matches)
+    .reduce((obj, match) => {
+      let season = match.season;
+      let player = match.player_of_match;
 
-    return objOfPlayerOfTheMatch;
-  }, {});
+      obj[season] || (obj[season] = {});
+      obj[season][player] = (obj[season][player] || 0) + 1;
 
-  const year = Object.keys(playerOfTheMatch);
+      return obj;
+    }, {})
+    .value();
 
-  const highestNumberOfPlayerOfTheMatch = year.reduce((objOfPlayer, season) => {
-    let seasonOfPlayerEntries = Object.entries(playerOfTheMatch[season]);
-    let sortedDataOfPlayer = seasonOfPlayerEntries.sort(
-      (firstEntry, secondEntry) => {
-        if (firstEntry[1] > secondEntry[1]) {
-          return -1;
-        } else if (firstEntry[1] < secondEntry[1]) {
-          return 1;
-        } else {
-          return 0;
-        }
-      }
-    );
+  let topPlayer = _.chain(allPlayer)
+    .keys()
+    .reduce((finalObj, year) => {
+      let player = _.chain(allPlayer[year])
+        .toPairs()
+        .sortBy((arr) => arr[1])
+        .slice(-1)
+        .flatten()
+        .value();
 
-    let topPlayerOfSeason = sortedDataOfPlayer.slice(0, 1).flat();
+      finalObj[year] || (finalObj[year] = {});
+      finalObj[year][player[0]] = player[1];
 
-    let playerName = topPlayerOfSeason[0];
-    let numberOfTime = topPlayerOfSeason[1];
+      return finalObj;
+    }, {})
+    .value();
 
-    if (objOfPlayer[season]) {
-      if (!objOfPlayer[season][playerName]) {
-        objOfPlayer[season][playerName] = numberOfTime;
-      }
-    } else {
-      objOfPlayer[season] = {};
-      objOfPlayer[season][playerName] = numberOfTime;
-    }
-
-    return objOfPlayer;
-  }, {});
-
-  return highestNumberOfPlayerOfTheMatch;
+  return topPlayer;
 };
 
-module.exports = highestPlayerOfTheMatchOfEachSeason;
+module.exports = playerOfTheMatch;

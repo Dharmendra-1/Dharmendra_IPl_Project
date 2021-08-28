@@ -1,106 +1,73 @@
+const _ = require('lodash');
+
 const strikeRateOfBatsmanEachSeason = (matches, deliveries) => {
-  const year = matches
+  const strikeRateOfBatsmanEachYear = _.chain(matches)
     .map((match) => match.season)
-    .reduce((arrayOfSeason, season) => {
-      if (arrayOfSeason.indexOf(season) === -1) {
-        arrayOfSeason.push(season);
-      }
+    .uniqBy()
+    .reduce((finalstrikeRateObj, year) => {
+      let idOfSeason = _.chain(matches)
+        .filter((match) => (match.season === year ? match : undefined))
+        .map((match) => match.id)
+        .value();
 
-      return arrayOfSeason;
-    }, []);
+      let ballPlayByBatsman = {};
 
-  const strikeRateOfBatsman = year.reduce((objOfStrikeRate, season) => {
-    let idOfSeason = matches
-      .filter((match) => match.season === season)
-      .map((match) => Number(match.id));
+      let batsmanRuns = _.chain(deliveries)
+        .reduce((runsOfObj, match) => {
+          if (idOfSeason.indexOf(match.match_id) !== -1) {
+            let batsman = match.batsman;
+            let batsmanRun = _.toNumber(match.batsman_runs);
 
-    let ballPlayByBatsman = {};
+            runsOfObj[year] || (runsOfObj[year] = {});
+            runsOfObj[year][batsman] =
+              (runsOfObj[year][batsman] || 0) + batsmanRun;
 
-    let batsmanRuns = deliveries.reduce((objOfBatsmanRun, deliverie) => {
-      let deli_id = Number(deliverie.match_id);
-
-      if (idOfSeason.indexOf(deli_id) !== -1) {
-        let batsman = deliverie.batsman;
-        let runsOfbatsman = Number(deliverie.batsman_runs);
-
-        if (ballPlayByBatsman[season]) {
-          if (ballPlayByBatsman[season][batsman]) {
-            ballPlayByBatsman[season][batsman] += 1;
-          } else {
-            ballPlayByBatsman[season][batsman] = 1;
+            ballPlayByBatsman[year] || (ballPlayByBatsman[year] = {});
+            ballPlayByBatsman[year][batsman] =
+              (ballPlayByBatsman[year][batsman] || 0) + 1;
           }
-        } else {
-          ballPlayByBatsman[season] = {};
-        }
 
-        if (objOfBatsmanRun[season]) {
-          if (objOfBatsmanRun[season][batsman]) {
-            objOfBatsmanRun[season][batsman] += runsOfbatsman;
-          } else {
-            objOfBatsmanRun[season][batsman] = runsOfbatsman;
-          }
-        } else {
-          objOfBatsmanRun[season] = {};
-        }
-      }
+          return runsOfObj;
+        }, {})
+        .value();
 
-      return objOfBatsmanRun;
-    }, {});
+      let calculateStrikeRate = _.chain(ballPlayByBatsman)
+        .reduce((strikeRate, ballData) => {
+          _.chain(ballData)
+            .keys(ballData)
+            .forEach((player) => {
+              if (batsmanRuns[year].hasOwnProperty(player)) {
+                let runs = batsmanRuns[year][player];
+                let bowl = ballPlayByBatsman[year][player];
 
-    let playerName = Object.keys(batsmanRuns[season]);
+                let batsmanstrikeRates = _.toNumber(
+                  ((runs / bowl) * 100).toFixed(2)
+                );
 
-    let calculateStrikeRate = playerName.reduce(
-      (objOfStrikeRate, nameOfPlayer) => {
-        if (ballPlayByBatsman[season].hasOwnProperty(nameOfPlayer)) {
-          let strikeRate = Number(
-            (
-              (batsmanRuns[season][nameOfPlayer] /
-                ballPlayByBatsman[season][nameOfPlayer]) *
-              100
-            ).toFixed(2)
-          );
+                strikeRate[year] || (strikeRate[year] = {});
+                strikeRate[year][player] = batsmanstrikeRates;
+              }
+            })
+            .value();
 
-          if (objOfStrikeRate[season]) {
-            if (!objOfStrikeRate[season][nameOfPlayer]) {
-              objOfStrikeRate[season][nameOfPlayer] = strikeRate;
-            }
-          } else {
-            objOfStrikeRate[season] = {};
-          }
-        }
+          return strikeRate;
+        }, {})
+        .value();
 
-        return objOfStrikeRate;
-      },
-      {}
-    );
+      _.chain(calculateStrikeRate[year])
+        .toPairs()
+        .sortBy((arr) => arr[1])
+        .forEach((array) => {
+          finalstrikeRateObj[year] || (finalstrikeRateObj[year] = {});
+          finalstrikeRateObj[year][array[0]] = array[1];
+        })
+        .value();
 
-    let seasonallydataOfStrikeRate = Object.entries(
-      calculateStrikeRate[season]
-    );
+      return finalstrikeRateObj;
+    }, {})
+    .value();
 
-    let sortedSeasonallyData = seasonallydataOfStrikeRate.sort(
-      (firstEntry, secondEntry) => {
-        if (firstEntry[1] < secondEntry[1]) {
-          return 1;
-        } else if (firstEntry[1] > secondEntry[1]) {
-          return -1;
-        } else {
-          return 0;
-        }
-      }
-    );
-
-    let finalStrikeRatesOfBatsman = Object.fromEntries(sortedSeasonallyData);
-
-    if (!objOfStrikeRate[season]) {
-      objOfStrikeRate[season] = {};
-      objOfStrikeRate[season] = finalStrikeRatesOfBatsman;
-    }
-
-    return objOfStrikeRate;
-  }, {});
-
-  return strikeRateOfBatsman;
+  return strikeRateOfBatsmanEachYear;
 };
 
 module.exports = strikeRateOfBatsmanEachSeason;

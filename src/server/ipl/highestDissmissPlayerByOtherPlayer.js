@@ -1,56 +1,41 @@
-const highestDissmissPlayerByOtherPlayer = (deliveries) => {
-  const dissmissPlayer = deliveries.reduce((objOfPlayer, match) => {
-    if (
-      match.player_dismissed.length !== 0 &&
-      match.dismissal_kind !== 'run out'
-    ) {
-      let player = match.player_dismissed;
-      let bowler = match.bowler;
+const _ = require('lodash');
 
-      if (objOfPlayer[player]) {
-        if (objOfPlayer[player][bowler]) {
-          objOfPlayer[player][bowler] += 1;
-        } else {
-          objOfPlayer[player][bowler] = 1;
-        }
-      } else {
-        objOfPlayer[player] = {};
+const dissmissPlayerByOther = (deliveries) => {
+  const dissmissPlayer = _.chain(deliveries)
+    .reduce((objOfPlayer, match) => {
+      if (
+        match.player_dismissed.length !== 0 &&
+        match.dismissal_kind !== 'run out'
+      ) {
+        let player = match.player_dismissed;
+        let bowler = match.bowler;
+
+        objOfPlayer[player] || (objOfPlayer[player] = {});
+        objOfPlayer[player][bowler] = (objOfPlayer[player][bowler] || 0) + 1;
       }
-    }
 
-    return objOfPlayer;
-  }, {});
+      return objOfPlayer;
+    }, {})
+    .value();
 
-  let batsmanName = Object.keys(dissmissPlayer);
+  const topDissmiss = _.chain(dissmissPlayer)
+    .keys()
+    .reduce((obj, player) => {
+      let bowlerData = _.chain(dissmissPlayer[player])
+        .toPairs()
+        .sortBy((arr) => arr[1])
+        .slice(-1)
+        .flatten()
+        .value();
 
-  let highestDissmiss = batsmanName.reduce((objOfPlayer, player) => {
-    let bowlerEntries = Object.entries(dissmissPlayer[player]);
+      obj[player] || (obj[player] = {});
+      obj[player][bowlerData[0]] = bowlerData[1];
 
-    let sortedDataOfBowler = bowlerEntries.sort((firstEntry, secondEntry) => {
-      if (firstEntry[1] < secondEntry[1]) {
-        return 1;
-      } else if (firstEntry[1] > secondEntry[1]) {
-        return -1;
-      } else {
-        return 0;
-      }
-    });
+      return obj;
+    }, {})
+    .value();
 
-    let bowlerData = sortedDataOfBowler.slice(0, 1).flat();
-
-    if (Array.isArray(bowlerData) && bowlerData.length !== 0) {
-      if (objOfPlayer[player]) {
-        objOfPlayer[player][bowlerData[0]] = bowlerData[1];
-      } else {
-        objOfPlayer[player] = {};
-        objOfPlayer[player][bowlerData[0]] = bowlerData[1];
-      }
-    }
-
-    return objOfPlayer;
-  }, {});
-
-  return highestDissmiss;
+  return topDissmiss;
 };
 
-module.exports = highestDissmissPlayerByOtherPlayer;
+module.exports = dissmissPlayerByOther;
