@@ -46,6 +46,34 @@ const server = http.createServer((request, response) => {
         });
       break;
 
+    case '/app.js':
+      readFile(path.join(__dirname, '../public/app.js'))
+        .then((content) => {
+          response.writeHead(200, { 'content-type': 'text/javascript' });
+          response.write(content);
+          response.end();
+        })
+        .catch((error) => {
+          response.writeHead(404, { 'content-type': 'text/javascript' });
+          response.write('File Not Found and Error :' + error);
+          response.end();
+        });
+      break;
+
+    case '/index.js':
+      readFile(path.join(__dirname, '../server/index.js'))
+        .then((content) => {
+          response.writeHead(200, { 'content-type': 'text/javascript' });
+          response.write(content);
+          response.end();
+        })
+        .catch((error) => {
+          response.writeHead(404, { 'content-type': 'text/javascript' });
+          response.write('File Not Found and Error :' + error);
+          response.end();
+        });
+      break;
+
     case '/highestDissmissPlayer.json':
       readFile(
         path.join(__dirname, '../public/output/highestDissmissPlayer.json')
