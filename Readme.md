@@ -28,6 +28,20 @@ $ npm start
 $ npm i http
 ```
 
+# Install nodemon for server
+
+```sh
+   $ npm i nodemon
+```
+ 
+# Run Nodejs Server 
+ ```sh
+   npm run server
+ ```
+ 
+# Link :-      http://localhost:4000   
+ 
+
 
 # IPL DATASET VISUALIZATION
 
