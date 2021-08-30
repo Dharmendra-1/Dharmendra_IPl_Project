@@ -15,18 +15,43 @@ const plotPlayerOfTheMatch = async () => {
     chart: {
       type: 'column',
     },
+    plotOptions: {
+      column: {
+        colorByPoint: true,
+      },
+    },
+    colors: [
+      '#FFA500',
+      '#00FFFF',
+      '#800080',
+      '#FFFF00',
+      '#008000',
+      '#FF00FF',
+      '#00FF00',
+      '#808000',
+      '#A52A2A',
+      '#00008B',
+    ],
     title: {
       text: 'Player Of The Match Each Season',
+      style: {
+        fontSize: '3em',
+        color: '#00000',
+      },
     },
     subtitle: {
-      text: 'Source: <a href="http://en.wikipedia.org/wiki/List_of_cities_proper_by_population">IPL</a>',
+      text: 'Source: <a href="https://www.kaggle.com/patrickb1912/ipl-complete-dataset-20082020">IPL</a>',
+      style: {
+        fontSize: '1em',
+      },
     },
     xAxis: {
       type: 'category',
       labels: {
         rotation: -45,
         style: {
-          fontSize: '15px   ',
+          fontSize: '2em',
+          color: '#000000',
           fontFamily: 'Verdana, sans-serif',
         },
       },
@@ -35,6 +60,10 @@ const plotPlayerOfTheMatch = async () => {
       min: 0,
       title: {
         text: 'PLAYER OF THE MATCH',
+        style: {
+          fontSize: '1.5em',
+          color: '#000000',
+        },
       },
     },
     legend: {
@@ -42,6 +71,10 @@ const plotPlayerOfTheMatch = async () => {
     },
     tooltip: {
       pointFormat: 'PLAYER OF THE MATCH',
+      style: {
+        fontSize: '1.5em',
+        width: '300px',
+      },
     },
     series: [
       {
@@ -73,18 +106,32 @@ const plotTeamWOnMatchAndToss = async () => {
     chart: {
       type: 'column',
     },
+    plotOptions: {
+      column: {
+        colorByPoint: true,
+      },
+    },
+    colors: ['#00008B', '#800080', '#008000', '#FFFF00', '#800000'],
     title: {
       text: 'Team Won Match And Toss',
+      style: {
+        fontSize: '3em',
+        color: '#00000',
+      },
     },
     subtitle: {
-      text: 'Source: <a href="http://en.wikipedia.org/wiki/List_of_cities_proper_by_population">IPL</a>',
+      text: 'Source: <a href="https://www.kaggle.com/patrickb1912/ipl-complete-dataset-20082020">IPL</a>',
+      style: {
+        fontSize: '1em',
+      },
     },
     xAxis: {
       type: 'category',
       labels: {
         rotation: -45,
         style: {
-          fontSize: '15px   ',
+          fontSize: '2em',
+          color: '#000000',
           fontFamily: 'Verdana, sans-serif',
         },
       },
@@ -93,6 +140,10 @@ const plotTeamWOnMatchAndToss = async () => {
       min: 0,
       title: {
         text: 'Team Won Match And Toss',
+        style: {
+          fontSize: '1.5em',
+          color: '#000000',
+        },
       },
     },
     legend: {
@@ -100,6 +151,10 @@ const plotTeamWOnMatchAndToss = async () => {
     },
     tooltip: {
       pointFormat: 'Team Won Match And Toss',
+      style: {
+        fontSize: '1.5em',
+        width: '300px',
+      },
     },
     series: [
       {
@@ -131,18 +186,32 @@ const plotSuperOverEconomies = async () => {
     chart: {
       type: 'column',
     },
+    plotOptions: {
+      column: {
+        colorByPoint: true,
+      },
+    },
+    colors: ['#FFA500', '#800000', '#FF00FF', '#0000FF', '#008000'],
     title: {
       text: 'Best Economies in Super Over',
+      style: {
+        fontSize: '3em',
+        color: '#00000',
+      },
     },
     subtitle: {
-      text: 'Source: <a href="http://en.wikipedia.org/wiki/List_of_cities_proper_by_population">IPL</a>',
+      text: 'Source: <a href="https://www.kaggle.com/patrickb1912/ipl-complete-dataset-20082020">IPL</a>',
+      style: {
+        fontSize: '1em',
+      },
     },
     xAxis: {
       type: 'category',
       labels: {
         rotation: -45,
         style: {
-          fontSize: '15px   ',
+          fontSize: '2em',
+          color: '#000000',
           fontFamily: 'Verdana, sans-serif',
         },
       },
@@ -151,6 +220,10 @@ const plotSuperOverEconomies = async () => {
       min: 0,
       title: {
         text: 'Best Economies in Super Over',
+        style: {
+          fontSize: '1.5em',
+          color: '#000000',
+        },
       },
     },
     legend: {
@@ -158,6 +231,10 @@ const plotSuperOverEconomies = async () => {
     },
     tooltip: {
       pointFormat: 'Best Economies in Super Over',
+      style: {
+        fontSize: '1.5em',
+        width: '300px',
+      },
     },
     series: [
       {
@@ -188,65 +265,94 @@ const plotHighestDissmissPlayer = async () => {
   let plotingData = Object.fromEntries(Object.entries(data).slice(0, 100));
   let batsman = Object.keys(plotingData);
   let seriesData = batsman.reduce((array, player) => {
-    let bowlerName = Object.keys(plotingData[player]);
-    let bothName = `${player} By ${bowlerName[0]}`;
-    let wktTimes = plotingData[player][bowlerName];
-
-    array.push({ name: bothName, data: [wktTimes] });
+    let bowlerData = Object.entries(plotingData[player]).flat();
+    let playerInfo = `${player} Out BY ${bowlerData[0]}`;
+    array.push([playerInfo, bowlerData[1]]);
     return array;
   }, []);
 
   Highcharts.chart('dissmissPlayer', {
     chart: {
-      type: 'bar',
+      type: 'column',
     },
+    plotOptions: {
+      column: {
+        colorByPoint: true,
+      },
+    },
+    colors: [
+      '#ff0000',
+      '#00ff00',
+      '#0000ff',
+      '#FFA500',
+      '#800000',
+      '#FF00FF',
+      '#0000FF',
+      '#008000',
+      '#00FFFF',
+      '#800080',
+      '#FFA500',
+      '#A52A2A',
+    ],
     title: {
-      text: 'Highest Dissmiss Player By Other Player',
+      text: 'Highest Dissmiss Batsman By Bowler',
+      style: {
+        fontSize: '3em',
+        color: '#00000',
+      },
     },
     subtitle: {
-      text: 'Source: <a href="https://en.wikipedia.org/wiki/World_population">IPL</a>',
+      text: 'Source: <a href="http://en.wikipedia.org/wiki/List_of_cities_proper_by_population">IPL</a>',
     },
     xAxis: {
-      title: {
-        text: 'Highest Dissmiss Player By Other Player',
+      type: 'category',
+      labels: {
+        rotation: -45,
+        style: {
+          fontSize: '1.5em',
+          color: '#000000',
+          fontFamily: 'Verdana, sans-serif',
+        },
       },
     },
     yAxis: {
       min: 0,
       title: {
-        text: '',
-        align: 'high',
-      },
-      labels: {
-        overflow: 'justify',
-      },
-    },
-    tooltip: {
-      valueSuffix: ' Times',
-    },
-    plotOptions: {
-      bar: {
-        dataLabels: {
-          enabled: true,
+        text: 'Highest Dissmiss Batsman By Bowler',
+        style: {
+          fontSize: '1.5em',
+          color: '#000000',
         },
       },
     },
     legend: {
-      layout: 'vertical',
-      align: 'right',
-      verticalAlign: 'top',
-      x: -40,
-      y: -80,
-      floating: true,
-      borderWidth: 1,
-      backgroundColor:
-        Highcharts.defaultOptions.legend.backgroundColor || '#FFFFFF',
-      shadow: true,
-    },
-    credits: {
       enabled: false,
     },
-    series: seriesData,
+    tooltip: {
+      pointFormat: 'Dissmiss Player',
+      style: {
+        fontSize: '1.5em',
+        width: '300px',
+      },
+    },
+    series: [
+      {
+        name: 'Dissmiss Player',
+        data: seriesData,
+        dataLabels: {
+          enabled: true,
+          rotation: -90,
+          color: '#FFFFFF',
+          align: 'right',
+          format: '{point.y:.1f}',
+          y: 2,
+          style: {
+            fontSize: '1.5em',
+            fontFamily: 'Verdana, sans-serif',
+          },
+        },
+      },
+    ],
   });
 };
 
@@ -254,28 +360,11 @@ const plotStrikeRateOfBatsman = async () => {
   let response = await fetch('http://localhost:4000/strikeRateOfBatsman.json');
   let plotingData = await response.json();
   let year = Object.keys(plotingData);
-
   let seriesData = year.reduce((array, season) => {
-    let infoOfPlayer = Object.entries(plotingData[season]).slice(0, 20).flat();
-
-    let playerName = infoOfPlayer.filter((ele) => typeof ele === 'string');
-
-    let keys = Object.keys(plotingData);
-    playerName.forEach((nameOfPlayer) => {
-      let plotData = [];
-      keys.forEach((yr) => {
-        let objOfData = plotingData[yr];
-        for (let player in objOfData) {
-          if (player === nameOfPlayer) {
-            plotData.push(objOfData[nameOfPlayer]);
-          }
-        }
-      });
-
-      plotData = plotData.slice(0, 9);
-      array.push({ name: nameOfPlayer, data: plotData });
-    });
-
+    let data = Object.entries(plotingData[season]).slice(0, 1).flat();
+    let name = `${data[0]} in ${season}`;
+    let strikeRate = data[1];
+    array.push([name, strikeRate]);
     return array;
   }, []);
 
@@ -283,38 +372,74 @@ const plotStrikeRateOfBatsman = async () => {
     chart: {
       type: 'column',
     },
+    plotOptions: {
+      column: {
+        colorByPoint: true,
+      },
+    },
+    colors: ['#00FFFF', '#800080', '#FFA500', '#A52A2A'],
     title: {
-      text: 'Strike Rate Of Batsman Each Season',
+      text: 'TOP BATSMAN STRIKE RATE OF EACH SEASON',
+      style: {
+        fontSize: '3em',
+        color: '#00000',
+      },
     },
     subtitle: {
-      text: 'Source: IPL',
+      text: 'Source: <a href="https://www.kaggle.com/patrickb1912/ipl-complete-dataset-20082020">IPL</a>',
+      style: {
+        fontSize: '1em',
+      },
     },
     xAxis: {
-      categories: year,
-      crosshair: true,
+      type: 'category',
+      labels: {
+        rotation: -45,
+        style: {
+          fontSize: '2em',
+          color: '#000000',
+          fontFamily: 'Verdana, sans-serif',
+        },
+      },
     },
     yAxis: {
       min: 0,
       title: {
-        text: 'Strike Rate Of Batsman Each Season',
+        text: 'TOP BATSMAN STRIKE RATE OF EACH SEASON',
+        style: {
+          fontSize: '1.5em',
+          color: '#000000',
+        },
       },
+    },
+    legend: {
+      enabled: false,
     },
     tooltip: {
-      headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
-      pointFormat:
-        '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
-        '<td style="padding:0"><b>{point.y:.1f} mm</b></td></tr>',
-      footerFormat: '</table>',
-      shared: true,
-      useHTML: true,
-    },
-    plotOptions: {
-      column: {
-        pointPadding: 0.2,
-        borderWidth: 0,
+      pointFormat: 'STRIKE RATE',
+      style: {
+        fontSize: '1.5em',
+        width: '300px',
       },
     },
-    series: seriesData,
+    series: [
+      {
+        name: 'TOP PLAYER',
+        data: seriesData,
+        dataLabels: {
+          enabled: true,
+          rotation: -90,
+          color: '#FFFFFF',
+          align: 'right',
+          format: '{point.y:.1f}',
+          y: 2,
+          style: {
+            fontSize: '2em',
+            fontFamily: 'Verdana, sans-serif',
+          },
+        },
+      },
+    ],
   });
 };
 
