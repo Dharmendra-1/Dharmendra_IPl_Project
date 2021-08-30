@@ -307,7 +307,7 @@ const plotHighestDissmissPlayer = async () => {
     xAxis: {
       type: 'category',
       labels: {
-        rotation: -45,
+        rotation: -90,
         style: {
           fontSize: '1.5em',
           color: '#000000',
