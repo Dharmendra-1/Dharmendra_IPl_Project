@@ -3,14 +3,16 @@ const plotPlayerOfTheMatch = async () => {
     let response = await fetch('http://localhost:4000/playerOfTheMatch.json');
     let playerOfTheMatchData = await response.json();
 
-    let year = Object.keys(playerOfTheMatchData);
-    let seriesData = year.reduce((series, year) => {
-      let player = Object.keys(playerOfTheMatchData[year]);
-      let playerWithYear = player + ' in ' + year;
-      let value = playerOfTheMatchData[year][player];
-      series.push([playerWithYear, value]);
-      return series;
-    }, []);
+    let seriesData = Object.keys(playerOfTheMatchData).reduce(
+      (series, year) => {
+        let player = Object.keys(playerOfTheMatchData[year]);
+        let playerWithYear = player + ' in ' + year;
+        let value = playerOfTheMatchData[year][player];
+        series.push([playerWithYear, value]);
+        return series;
+      },
+      []
+    );
 
     Highcharts.chart('containerFirst', {
       chart: {
@@ -280,8 +282,7 @@ const plotHighestDissmissPlayer = async () => {
     let data = await response.json();
 
     let plotingData = Object.fromEntries(Object.entries(data).slice(0, 100));
-    let batsman = Object.keys(plotingData);
-    let seriesData = batsman.reduce((array, player) => {
+    let seriesData = Object.keys(plotingData).reduce((array, player) => {
       let bowlerData = Object.entries(plotingData[player]).flat();
       let playerInfo = `${player} Out BY ${bowlerData[0]}`;
       array.push([playerInfo, bowlerData[1]]);
@@ -382,8 +383,7 @@ const plotStrikeRateOfBatsman = async () => {
       'http://localhost:4000/strikeRateOfBatsman.json'
     );
     let plotingData = await response.json();
-    let year = Object.keys(plotingData);
-    let seriesData = year.reduce((array, season) => {
+    let seriesData = Object.keys(plotingData).reduce((array, season) => {
       let data = Object.entries(plotingData[season]).slice(0, 1).flat();
       let name = `${data[0]} in ${season}`;
       let strikeRate = data[1];
